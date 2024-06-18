@@ -1,0 +1,297 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    outline: none
+}
+
+html {
+    margin: 0;
+    height: 100%;
+    overflow-x: hidden
+}
+
+body {
+    margin: 0px;
+    overflow-x: hidden;
+    min-height: 100%;
+    background: #F5F6F7;
+    background-image: url('../img/bg.jpg');
+}
+
+#main {
+    position: relative;
+    z-index: 1;
+    padding-bottom: 50px; 
+}
+
+.content {
+    max-width: 1280px;
+    width: 95%;
+    margin: 0 auto
+}
+
+.close{
+    font-size: 16px;
+    font-weight: 900;
+    transition: all 250ms ease;
+    color: #b0b0b0;
+}
+
+.btn-default{
+    cursor: pointer;
+    color: #fff;
+    font-weight: 600;
+    border: 1px solid #293b14;
+    border-radius: 8px;
+    background-color: #293b14;
+    padding: 10px 20px;
+    transition: all 250ms ease;
+}
+
+.btn-default:hover{
+    color: #fff;
+    border: 1px solid #344d0e;
+    background-color: #344d0e;
+}
+
+/*
+    293b14 - Roxo
+    344d0e - Verde
+    b0b0b0 - Cinza
+*/
+
+header{
+    background: #293b14;
+    padding: 30px 0;
+    margin-bottom: 25px;
+}
+
+header .content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header .content *{
+    color: #fff;
+    margin: 5px 0;
+}
+
+.top-forms, #dropdown, .bottom-forms{
+    width: 100%;
+    border: 1px solid #b0b0b0;
+    border-radius: 8px;
+    padding: 25px 20px 15px 20px;
+    margin: 15px auto;
+    background-color: #fff;
+}
+
+.top-forms{
+    width: 50%;
+}
+
+#dropdown{
+    width: 75%;
+}
+
+#dropdown-click{
+    width: 100%;
+    cursor: pointer;
+}
+
+#dropdown .title-dropdown{
+    transition: all 250ms ease;
+}
+
+#dropdown.open .title-dropdown{
+    margin-bottom: 25px;
+}
+
+#dropdown .infos{
+    height: 0;
+    visibility: hidden;
+    transition: all 250ms ease;
+}
+
+#dropdown.open .infos{
+    height: 370px;
+    visibility: visible;
+}
+
+.infos .grammar{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: 25px;
+}
+
+.bottom-forms{
+    width: calc(100% - 40px);
+}
+
+.top-forms h3, .top-forms h4 .bottom-forms h3, #dropdown h3{
+    text-align: center;
+    font-weight: 700;
+    color: #293b14;
+}
+
+#dropdown .infos h3{
+    text-align: start;
+    margin-bottom: 10px;
+}
+
+#dropdown .parsing h3{
+    text-align: center;
+    margin: 20px 0;
+}
+
+.top-forms h4{
+    margin-top: 40px;
+}
+
+.top-forms .insert{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 25px 0;
+}
+
+.top-forms .insert input[type=text], .bottom-forms .validate input[type=text]{
+    width: 50%;
+    border: 1px solid #b0b0b0;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-right: 15px;
+}
+
+#tokens{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    margin-top: 25px;
+}
+
+#tokens .token{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: rgba(107, 105, 105, 0.15);
+    border-radius: 12px;
+    padding: 5px 15px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+
+#tokens .token .text{
+    font-size: 14px;
+    margin-right: 15px;
+}
+
+#tokens .token:hover .close{
+    color: red;
+}
+
+.bottom-forms{
+    display: flex;
+    position: relative;
+    height: 500px;
+    overflow-y: scroll;
+}
+
+.bottom-forms .validate-wrapper{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 15px;
+    width: 15%;
+    padding-right: 2%;
+    border-right: 1px solid #b0b0b0;
+}
+
+.bottom-forms .validate-wrapper .validate{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.bottom-forms .table-wrapper{
+    width: 80%;
+    height: fit-content;
+    padding-left: 2%;
+}
+
+.bottom-forms .validate button{
+    margin: 10px 0;
+}
+
+.table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th{
+    border-bottom: 1px solid #8c8b8b;
+    font-weight: 500;
+}
+
+.table tr.green{
+    background-color: greenyellow;
+}
+
+.table tr.red{
+    background-color: red;
+}
+
+.table tr.current_step{
+    border: 2px solid #293b14;
+}
+
+.table tr.end.green{
+    background-color: #344d0e;
+}
+
+.table tr.end.green td{
+    color: #FFF;
+    font-weight: 900;
+}
+
+.table tr td{
+    text-align: center;
+    padding: 10px 0;
+}
+
+.table tr th{
+    border-right: 1px solid #8c8b8b;
+    font-weight: 700;
+}
+
+.table tr td{
+    border: 1px solid #8c8b8b;
+}
+
+.table tr td:first-child{
+    width: 10%;
+    font-weight: 700;
+}
+
+.table tr td.empty{
+    font-size: 12px;
+}
+
+.table tr td.step{
+    font-weight: 700;
+}
+
+.table-wrapper * {
+    overflow-anchor: none;
+}
+
+#anchor {
+    overflow-anchor: auto;
+    height: 1px;
+}
+
+.grammar-infos {
+    display: flex;
+    gap: 20px;
+}

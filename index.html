@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/default.css" />
+    <title>Analisador Sintático</title>
+  </head>
+  <body>
+    <header>
+      <div class="content">
+        <h1>Analisador Sintático</h1>
+      </div>
+    </header>
+    <section id="main" class="content">
+      <div class="grammar-infos">
+        <div class="top-forms">
+          <h3>Inserir Sentença</h3>
+          <div class="insert">
+            <input
+              id="tokenInput"
+              type="text"
+              placeholder="Digite a Sentença"
+              onDrop="return false"
+              oninput="initAutomaton()" />
+            <button id="tokenGenerate" onclick="initSentence()" class="btn-default">Gerar</button>
+          </div>
+          <div class="validate-wrapper">
+            <div class="validate">
+              <h3>Passos</h3>
+              <button id="nextPass" onclick="nextPass()" class="btn-default">Próximo Passo</button>
+              <button id="lastPass" onclick="checkEnd()" class="btn-default">Resolver</button>
+            </div>
+          </div>
+        </div>
+        <div class="top-forms">
+          <div class="infos">
+            <div class="grammar">
+              <div class="info">
+                <h3>Gramática</h3>
+                <div>
+                  <span>S := ABC </span><br />
+                  <span>A := aAb | ε</span><br />
+                  <span>B := cBCcA | d</span><br />
+                  <span>C := eCBe | f</span><br />
+                </div>
+              </div>
+              <div class="info">
+                <h3>First</h3>
+                <div>
+                  <span>S = {a, c, d}</span><br />
+                  <span>A = {a, ε}</span><br />
+                  <span>B = {c, d}</span><br />
+                  <span>C = {e, f}</span><br />
+                </div>
+              </div>
+              <div class="info">
+                <h3>Follow</h3>
+                <div>
+                  <span>S = {$}</span><br />
+                  <span>A = {b, c, d, e, f}</span><br />
+                  <span>B = {e, f}</span><br />
+                  <span>C = {$, c, d}</span><br />
+                </div>
+              </div>
+            </div>
+            <div class="parsing">
+              <h3>Tabela de Parsing</h3>
+              <div>
+                <table id="parsingTable" class="tg table" style="width: 100%">
+                  <th></th>
+                  <th>a</th>
+                  <th>b</th>
+                  <th>c</th>
+                  <th>d</th>
+                  <th>e</th>
+                  <th>f</th>
+                  <th>$</th>
+                  <tr>
+                    <td>S</td>
+                    <td>S -> ABC</td>
+                    <td></td>
+                    <td>S -> ABC</td>
+                    <td>S -> ABC</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>A</td>
+                    <td>A -> aAb</td>
+                    <td>A -> ε</td>
+                    <td>A -> ε</td>
+                    <td>A -> ε</td>
+                    <td>A -> ε</td>
+                    <td>A -> ε</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>B</td>
+                    <td></td>
+                    <td></td>
+                    <td>B -> cBCcA</td>
+                    <td>B -> d</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>C</td>
+                    <td></td>
+                    <td></td>
+                    <td>C -> eCBe</td>
+                    <td></td>
+                    <td></td>
+                    <td>C -> f</td>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="bottom-forms">
+        <div class="table-wrapper">
+          <table id="resolutionTable" class="table"></table>
+          <div id="anchor"></div>
+        </div>
+      </div>
+    </section>
+    <footer></footer>
+  <!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+  <script src="js/default.js"></script>
+</html>
