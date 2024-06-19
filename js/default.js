@@ -10,6 +10,36 @@
 
 // abcdfcf -> OK em 15
 
+$(document).ready(function(){
+    $("#tokenInput").on("input", function() {
+        activateButtons();
+    });
+    $("#tokenGenerate").on("click", function() {
+        activateButtons();
+    });
+});
+
+function activateButtons() {
+    if ($("#tokenInput").val().trim() != '') {
+        $("#nextPass").prop("disabled", false);
+        $("#lastPass").prop("disabled", false);
+        $("#nextPass").css('display', 'inline-block');
+        $("#lastPass").css('display', 'inline-block');
+        $("#nextPass").css("opacity", "1");
+        $("#lastPass").css("opacity", "1");
+
+        $("#sentence").text($("#tokenInput").val());
+        $("#sentence").css('color', 'black');
+    }
+}
+
+function blockButtons() {
+    $("#nextPass").prop("disabled", true);
+    $("#lastPass").prop("disabled", true);
+    $("#nextPass").css("opacity", "0.5");
+    $("#lastPass").css("opacity", "0.5");
+}
+
 class NonTerminal {
     constructor(key, list){
         this.key = key;
@@ -150,6 +180,10 @@ function nextPass() {
         if(charPile == entry.charAt(0) && charPile == "$"){
             action = "Aceito em " + iteracao + " iterações";
             end = true;
+
+            $("#sentence").text($("#sentence").text() + " - Aceito em " + iteracao + " iterações!");
+            $("#sentence").css('color', '#344d0e');
+            blockButtons();
         } else if(charPile && charPile == charPile.toUpperCase()){
             let globalProduction = searchProduction(charPile, entry.charAt(0));
             if(globalProduction) {
@@ -160,6 +194,10 @@ function nextPass() {
             } else {
                 end = true;
                 action = "Erro em " + iteracao + " iterações!";
+
+                $("#sentence").text($("#sentence").text() + " - Erro em " + iteracao + " iterações!");
+                $("#sentence").css('color', 'red');
+                blockButtons();
             }
         } else if (charPile && charPile == entry.charAt(0)){
             action = "Lê '" + entry.charAt(0) + "'";
@@ -167,6 +205,10 @@ function nextPass() {
         } else {
             end = true;
             action = "Erro em " + iteracao + " iterações!";
+
+            $("#sentence").text($("#sentence").text() + " - Erro em " + iteracao + " iterações!");
+            $("#sentence").css('color', 'red');
+            blockButtons();
         }
 
         insertRow(pileTable, entryTable, action);

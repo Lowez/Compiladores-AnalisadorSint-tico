@@ -151,10 +151,8 @@ header .content *{
 }
 
 .top-forms .insert{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     margin: 25px 0;
+    text-align: center;
 }
 
 .top-forms .insert input[type=text], .bottom-forms .validate input[type=text]{
@@ -193,9 +191,9 @@ header .content *{
 }
 
 .bottom-forms{
-    display: flex;
+    /* display: flex;
     position: relative;
-    height: 500px;
+    height: 500px; */
     overflow-y: scroll;
 }
 
@@ -260,9 +258,11 @@ header .content *{
     padding: 10px 0;
 }
 
-.table tr th{
+.table tr th {
     border-right: 1px solid #8c8b8b;
     font-weight: 700;
+    border-top: 1px solid #8c8b8b;
+    border-left: 1px solid #8c8b8b;
 }
 
 .table tr td{
@@ -294,4 +294,20 @@ header .content *{
 .grammar-infos {
     display: flex;
     gap: 20px;
+    justify-content: center;
+}
+
+.validate {
+    text-align: center;
+}
+
+.validate button {
+    width: 30%;
+}
+
+#sentence {
+    text-align: left;
+    margin-top: 30px;
+    margin-left: 25px;
+
 }
