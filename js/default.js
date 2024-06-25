@@ -111,7 +111,9 @@ function inicializaProducao(nTerminal, inicial, producao){
     console.log(producaoGeral)
     for(let i in producaoGeral){
         naoTerminal = producaoGeral[i];
-        regraJaAdicionada = naoTerminal.key == nTerminal;
+        if (nTerminal == naoTerminal.key) {
+            regraJaAdicionada = true;
+        }
 
         // Caso a regra para o Não Terminal atual esteja criada, remove da produção geral
         if(regraJaAdicionada){
@@ -151,6 +153,7 @@ function geraSentenca(){
         for(let i in producaoGeral){
             let naoTerminal = producaoGeral[i];
             if(naoTerminal.key == nTerminal){
+                // Pega uma das produções da não terminal
                 let rand = Math.floor(Math.random() * naoTerminal.producao.length);
                 let prod = naoTerminal.producao[rand];
 
@@ -166,6 +169,7 @@ function geraSentenca(){
                 if(match == null){
                     terminouDeGerar = true;
                 } else {
+                    // Caso ainda exista, pega a próxima
                     nTerminal = match[0];
                 }
             }
