@@ -20,16 +20,16 @@
           <h3>Sentenças</h3>
           <div class="insert">
             <input
-              id="tokenInput"
+              id="sentenca"
               type="text"
               placeholder="Digite a Sentença"
               onDrop="return false"
               oninput="initAutomaton()" />
           </div>
           <div class="validate">
-            <button id="tokenGenerate" onclick="initSentence()" class="btn-default">Gerar</button>
-            <button id="nextPass" onclick="nextPass()" class="btn-default" style="display: none;">Passo a Passo</button>
-            <button id="lastPass" onclick="checkEnd()" class="btn-default" style="display: none;">Resolução Direta</button>
+            <button id="tokenGenerate" onclick="geraSentenca()" class="btn-default">Gerar</button>
+            <button id="passoPasso" onclick="passoPasso()" class="btn-default" style="display: none;">Passo a Passo</button>
+            <button id="resolucaoDireta" onclick="resolucaoDireta()" class="btn-default" style="display: none;">Resolução Direta</button>
           </div>
           <p id="sentence"></p>
         </div>
@@ -111,7 +111,7 @@
       </div>
       <div class="bottom-forms">
         <div class="table-wrapper">
-          <table id="resolutionTable" style="margin-left: 100px;" class="table"></table>
+          <table id="resolucao" style="margin-left: 100px;" class="table"></table>
           <div id="anchor"></div>
         </div>
       </div>

@@ -1,94 +1,170 @@
-// S → ABC
-// A → aAb | ε
-// B → cBCcA | d
-// C → eCBe | f
-
-// First(S) = {a, c, d}    Follow(S) = {$}
-// First(A) = {a, ε}       Follow(A) = {c, d, b, e, f}
-// First(B) = {c, d}       Follow(B) = {e, f}
-// First(C) = {e, f}       Follow(C) = {$, c, d}
-
-// abcdfcf -> OK em 15
-
-$(document).ready(function(){
-    $("#tokenInput").on("input", function() {
-        activateButtons();
-    });
-    $("#tokenGenerate").on("click", function() {
-        activateButtons();
-    });
-});
-
-function activateButtons() {
-    if ($("#tokenInput").val().trim() != '') {
-        $("#nextPass").prop("disabled", false);
-        $("#lastPass").prop("disabled", false);
-        $("#nextPass").css('display', 'inline-block');
-        $("#lastPass").css('display', 'inline-block');
-        $("#nextPass").css("opacity", "1");
-        $("#lastPass").css("opacity", "1");
-
-        $("#sentence").text($("#tokenInput").val());
-        $("#sentence").css('color', 'black');
-    }
-}
-
-function blockButtons() {
-    $("#nextPass").prop("disabled", true);
-    $("#lastPass").prop("disabled", true);
-    $("#nextPass").css("opacity", "0.5");
-    $("#lastPass").css("opacity", "0.5");
-}
-
-class NonTerminal {
-    constructor(key, list){
+class NaoTerminal {
+    constructor(key, producao){
         this.key = key;
-        this.list = list
+        this.producao = producao
     }
 }
 
-class Production{
-    constructor(nonTerminal, initial, production){
-        this.nonTerminal = nonTerminal;
-        this.initial = initial;
-        this.production = production;
+class Producao{
+    constructor(naoTerminal, inicial, producao){
+        this.naoTerminal = naoTerminal;
+        this.inicial = inicial;
+        this.producao = producao;
     }
 }
 
 const epsilon = "ε";
 
 let iteracao = 0;
-let pile = "$S";
-let entry = "";
-let end = false;
-let globalProduction = [];
-let palavraInput = document.getElementById("tokenInput");
-let table = document.getElementById("resolutionTable");
+let pilha = "$S";
+let entrada = "";
+let finalizou = false;
+let producaoGeral = [];
+let sentencaDigitada = document.getElementById("sentenca");
+let tabela = document.getElementById("resolucao");
 
-//Inits
-function initSentence(){
-    let complete = false;
-    let sentence = "S";
+$(document).ready(function(){
+    // Ativa os botões dos passos ao gerar sentença
+    $("#sentenca").on("input", function() {
+        activateButtons();
+    });
+    $("#tokenGenerate").on("click", function() {
+        activateButtons();
+    });
+
+    // Configurações iniciais
+    reset();
+
+    // Geração do header da tabela
+    let header = $("<thead></thead>");
+    let row = $("<tr></tr>").appendTo(header);
+
+    row.append($("<th></th>").text(" "));
+    row.append($("<th></th>").text("Pilha"));
+    row.append($("<th></th>").text("Entrada"));
+    row.append($("<th></th>").text("Ação"));
+
+    $("#resolucao").append(header);
+
+    // Regra S
+    producaoGeral.push(
+        inicializaProducao(
+            "S", // Regra
+            ["a"], // First
+            "aAB" // Geração
+        )
+    );
+
+    // Regra A
+    producaoGeral.push(
+        inicializaProducao(
+            "A", 
+            ["b"], 
+            "bB"
+        )
+    );
+    producaoGeral.push(
+        inicializaProducao(
+            "A", 
+            ["c"], 
+            "cSa"
+        )
+    );
+
+    // Regra B
+    producaoGeral.push(
+        inicializaProducao(
+            "B", 
+            ["c"], 
+            "cSb"
+        )
+    );
+    producaoGeral.push(
+        inicializaProducao(
+            "B", 
+            ["a"], 
+            "aCc"
+        )
+    );
+
+    // Regra C
+    producaoGeral.push(
+        inicializaProducao(
+            "C", 
+            ["a"], 
+            "aA"
+        )
+    );
+    producaoGeral.push(
+        inicializaProducao(
+            "C", 
+            ["c"], 
+            epsilon
+        )
+    );
+});
+
+// Organiza as regras dos Não Terminais {S, A, B, C} e seus produções nos objetos
+function inicializaProducao(nTerminal, inicial, producao){
+    let regraJaAdicionada = false;
+    let naoTerminal;
+    console.log(producaoGeral)
+    for(let i in producaoGeral){
+        naoTerminal = producaoGeral[i];
+        regraJaAdicionada = naoTerminal.key == nTerminal;
+
+        // Caso a regra para o Não Terminal atual esteja criada, remove da produção geral
+        if(regraJaAdicionada){
+            producaoGeral.splice(i, 1);
+            break;
+        }
+    }
+
+    // Cria a regra caso ainda não exista
+    if(!regraJaAdicionada){
+        naoTerminal = new NaoTerminal(nTerminal, []);
+    }
+
+    naoTerminal.producao.push(new Producao(naoTerminal, inicial, producao));
+    return naoTerminal;
+}
+
+function reset(){
+    iteracao = 0;
+    pilha = "$S";
+    entrada = "";
+    finalizou = false;
+
+    while(tabela.hasChildNodes()){
+        tabela.removeChild(tabela.lastChild);
+    }
+}
+
+// Gera as sentenças, substituindo não terminais por terminais
+function geraSentenca(){
+    let terminouDeGerar = false;
+    let sentenca = "S";
     let nTerminal = "S";
     let steps = 0;
 
-    while(!complete){
-        for(let i in globalProduction){
-            let nonTerminal = globalProduction[i];
-            if(nonTerminal.key == nTerminal){
-                let rand = Math.floor(Math.random() * nonTerminal.list.length);
-                let prod = nonTerminal.list[rand];
+    while(!terminouDeGerar){
+        for(let i in producaoGeral){
+            let naoTerminal = producaoGeral[i];
+            if(naoTerminal.key == nTerminal){
+                let rand = Math.floor(Math.random() * naoTerminal.producao.length);
+                let prod = naoTerminal.producao[rand];
 
-                if(prod.production !== epsilon){
-                    sentence = sentence.replace(nTerminal, prod.production);
+                if(prod.producao !== epsilon){
+                    sentenca = sentenca.replace(nTerminal, prod.producao);
                 } else {
-                    sentence = sentence.replace(nTerminal, '');
+                    sentenca = sentenca.replace(nTerminal, '');
                 }
 
-                let match = /([A-Z])/g.exec(sentence);
+                // Caso não exista mais não terminais, a sentença foi criada corretamente
+                let match = /([A-Z])/g.exec(sentenca);
                 
                 if(match == null){
-                    complete = true;
+                    terminouDeGerar = true;
                 } else {
                     nTerminal = match[0];
                 }
@@ -96,62 +172,37 @@ function initSentence(){
         }
         steps++;
 
-        //Passou de 10 e nada ainda, reinicia
         if(steps >= 10){
-            sentence = "S";
+            sentenca = "S";
             nTerminal = "S";
             steps = 0;
         }
     }
 
-    palavraInput.value = sentence;
-    initAutomaton();
+    sentencaDigitada.value = sentenca;
+    reset();
+
+    // Geração do header da tabela
+    let header = $("<thead></thead>");
+    let row = $("<tr></tr>").appendTo(header);
+
+    row.append($("<th></th>").text(" "));
+    row.append($("<th></th>").text("Pilha"));
+    row.append($("<th></th>").text("Entrada"));
+    row.append($("<th></th>").text("Ação"));
+
+    $("#resolucao").append(header);
 }
 
-function initAutomaton(){
-    clearTable();
-
-    let header = table.createTHead();
-    let row = header.insertRow(-1);
-
-    row.appendChild(columnHTML("th", " "));
-    row.appendChild(columnHTML("th", "Pilha"));
-    row.appendChild(columnHTML("th", "Entrada"));
-    row.appendChild(columnHTML("th", "Ação"));
-}
-
-function initProduction(nTerminal, initial, production){
-    let exists = false;
-    let nonTerminal;
-    
-    for(let i in globalProduction){
-        nonTerminal = globalProduction[i];
-        exists = nonTerminal.key == nTerminal;
-        if(exists){
-            globalProduction.splice(i, 1);
-            break;
-        }
-    }
-
-    if(!exists){
-        nonTerminal = new NonTerminal(nTerminal, []);
-    }
-
-    nonTerminal.list.push(new Production(nonTerminal, initial, production));
-    return nonTerminal;
-}
-
-//Iterar Produção
-function searchProduction(pile, char){
-    for (let i in globalProduction) {
-        let nT = globalProduction[i];
-        if(nT.key == pile){
-            for (let j in nT.list) {
-                let globalProduction = nT.list[j];
-                console.log(globalProduction.initial);
-                console.log(char);
-                if(globalProduction.nonTerminal.key == pile && globalProduction.initial.includes(char)){
-                    return globalProduction;
+// Busca qual deve ser a produção para o simbolo que está na pilha em relação à entrada
+function buscaProximaProducao(pilha, char){
+    for (let i in producaoGeral) {
+        let naoTerminal = producaoGeral[i];
+        if(naoTerminal.key == pilha){
+            for (let j in naoTerminal.producao) {
+                let producaoGeral = naoTerminal.producao[j];
+                if(producaoGeral.naoTerminal.key == pilha && producaoGeral.inicial.includes(char)){
+                    return producaoGeral;
                 }
             }
         }
@@ -159,75 +210,103 @@ function searchProduction(pile, char){
     return false;
 }
 
-function nextPass() {
-    if(palavraInput.value.length > 0){
-        if(end){
-            initAutomaton();
+function passoPasso() {
+    // Caso tenha sentença no campo de texto
+    if(sentencaDigitada.value.length > 0){
+        if(finalizou){
+            reset();
+
+            // Geração do header da tabela
+            let header = $("<thead></thead>");
+            let row = $("<tr></tr>").appendTo(header);
+
+            row.append($("<th></th>").text(" "));
+            row.append($("<th></th>").text("Pilha"));
+            row.append($("<th></th>").text("Entrada"));
+            row.append($("<th></th>").text("Ação"));
+
+            $("#resolucao").append(header);
         }
 
-        if(!entry){
-            entry = palavraInput.value + "$";
+        if(!entrada){
+            entrada = sentencaDigitada.value + "$";
         }
 
-        let action = "";
-        let charPile = pile.slice(-1);
-        let pileTable = pile;
-        let entryTable = entry;
-        pile = pile.slice(0, -1);
+        let acaoTomada = ""; // Aceito, Erro ou Produção
+        let pilhaDeCaracteres = pilha.slice(-1); // Padrão é $S, será pego o S
+        let tabelaDaPilha = pilha; // $S
+        let tabelaDaEntrada = entrada; // ""
+        pilha = pilha.slice(0, -1); // Retorna $
 
         iteracao++;
 
-        if(charPile == entry.charAt(0) && charPile == "$"){
-            action = "Aceito em " + iteracao + " iterações";
-            end = true;
+        // Caso o topo da pilha e o primeiro caractere da entrada sejam ambos $
+        if(pilhaDeCaracteres == entrada.charAt(0) && pilhaDeCaracteres == "$"){
+            acaoTomada = "Aceito em " + iteracao + " iterações";
+            finalizou = true;
 
             $("#sentence").text($("#sentence").text() + " - Aceito em " + iteracao + " iterações!");
             $("#sentence").css('color', '#344d0e');
             blockButtons();
-        } else if(charPile && charPile == charPile.toUpperCase()){
-            let globalProduction = searchProduction(charPile, entry.charAt(0));
-            if(globalProduction) {
-                action = globalProduction.nonTerminal.key + " -> " + globalProduction.production;
-                if(globalProduction.production !== epsilon){
-                    pile += globalProduction.production.split('').reverse().join('');
+        } else if(pilhaDeCaracteres && pilhaDeCaracteres == pilhaDeCaracteres.toUpperCase()){
+            // Caso o topo da pilha seja um não-terminal
+            let producaoGeral = buscaProximaProducao(pilhaDeCaracteres, entrada.charAt(0));
+            if(producaoGeral) {
+                acaoTomada = producaoGeral.naoTerminal.key + " -> " + producaoGeral.producao;
+                if(producaoGeral.producao !== epsilon){
+                    pilha += producaoGeral.producao.split('').reverse().join('');
                 }
             } else {
-                end = true;
-                action = "Erro em " + iteracao + " iterações!";
+                finalizou = true;
+                acaoTomada = "Erro em " + iteracao + " iterações!";
 
                 $("#sentence").text($("#sentence").text() + " - Erro em " + iteracao + " iterações!");
                 $("#sentence").css('color', 'red');
                 blockButtons();
             }
-        } else if (charPile && charPile == entry.charAt(0)){
-            action = "Lê '" + entry.charAt(0) + "'";
-            entry = entry.substr(1);
+        } else if (pilhaDeCaracteres && pilhaDeCaracteres == entrada.charAt(0)){
+            // Caso o topo da pilha seja igual ao primeiro caractere da entrada
+            acaoTomada = "Lê '" + entrada.charAt(0) + "'";
+            entrada = entrada.substr(1);
         } else {
-            end = true;
-            action = "Erro em " + iteracao + " iterações!";
+            // Caso ocorra um erro de sintaxe
+            finalizou = true;
+            acaoTomada = "Erro em " + iteracao + " iterações!";
 
             $("#sentence").text($("#sentence").text() + " - Erro em " + iteracao + " iterações!");
             $("#sentence").css('color', 'red');
             blockButtons();
         }
 
-        insertRow(pileTable, entryTable, action);
-        return action;
+        // Insere a ação realizada na tabela de resolução
+        inserirColuna(tabelaDaPilha, tabelaDaEntrada, acaoTomada);
+        return acaoTomada;
     } else {
-        end = true;
+        finalizou = true;
     }
 }
 
-function checkEnd(){
-    let action;
-    initAutomaton();
-    while(!end){
-        action = nextPass();
+function resolucaoDireta(){
+    let acaoTomada;
+    reset();
+
+    // Geração do header da tabela
+    let header = $("<thead></thead>");
+    let row = $("<tr></tr>").appendTo(header);
+
+    row.append($("<th></th>").text(" "));
+    row.append($("<th></th>").text("Pilha"));
+    row.append($("<th></th>").text("Entrada"));
+    row.append($("<th></th>").text("Ação"));
+
+    $("#resolucao").append(header);
+
+    while(!finalizou){
+        acaoTomada = passoPasso();
     }
-    alert(action);
+    alert(acaoTomada);
 }
 
-//Helpers
 function columnHTML(type, text, cssClass){
     let cell = document.createElement(type);
     cell.className = cssClass;
@@ -235,39 +314,31 @@ function columnHTML(type, text, cssClass){
     return cell;
 }
 
-function insertRow(pile, entry, action){
-    let row = table.insertRow(-1);
+function inserirColuna(pilha, entrada, acaoTomada){
+    let row = tabela.insertRow(-1);
     row.appendChild(columnHTML("td", iteracao));
-    row.appendChild(columnHTML("td", pile));
-    row.appendChild(columnHTML("td", entry));
-    row.appendChild(columnHTML("td", action));
+    row.appendChild(columnHTML("td", pilha));
+    row.appendChild(columnHTML("td", entrada));
+    row.appendChild(columnHTML("td", acaoTomada));
 }
 
-function clearTable(){
-    iteracao = 0;
-    pile = "$S";
-    entry = "";
-    end = false;
+function activateButtons() {
+    if ($("#sentenca").val().trim() != '') {
+        $("#passoPasso").prop("disabled", false);
+        $("#resolucaoDireta").prop("disabled", false);
+        $("#passoPasso").css('display', 'inline-block');
+        $("#resolucaoDireta").css('display', 'inline-block');
+        $("#passoPasso").css("opacity", "1");
+        $("#resolucaoDireta").css("opacity", "1");
 
-    while(table.hasChildNodes()){
-        table.removeChild(table.lastChild);
+        $("#sentence").text($("#sentenca").val());
+        $("#sentence").css('color', 'black');
     }
 }
 
-function toggleDropdown(){
-    let dropdown = document.getElementById('dropdown');
-    dropdown.classList.toggle('open');
+function blockButtons() {
+    $("#passoPasso").prop("disabled", true);
+    $("#resolucaoDireta").prop("disabled", true);
+    $("#passoPasso").css("opacity", "0.5");
+    $("#resolucaoDireta").css("opacity", "0.5");
 }
-
-//Chamadas Iniciais
-initAutomaton();
-globalProduction.push(initProduction("S", ["a"], "aAB"));
-
-globalProduction.push(initProduction("A", ["b"], "bB"));
-globalProduction.push(initProduction("A", ["c"], "cSa"));
-
-globalProduction.push(initProduction("B", ["c"], "cSb"));
-globalProduction.push(initProduction("B", ["a"], "aCc"));
-
-globalProduction.push(initProduction("C", ["a"], "aA"));
-globalProduction.push(initProduction("C", ["c"], epsilon));
