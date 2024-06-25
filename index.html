@@ -40,28 +40,28 @@
               <div class="info">
                 <h3>Gramática</h3>
                 <div>
-                  <span>S := ABC </span><br />
-                  <span>A := aAb | ε</span><br />
-                  <span>B := cBCcA | d</span><br />
-                  <span>C := eCBe | f</span><br />
+                  <span>S := aAB </span><br />
+                  <span>A := bB | cSa</span><br />
+                  <span>B := cSb | aCc</span><br />
+                  <span>C := aA | ε</span><br />
                 </div>
               </div>
               <div class="info">
                 <h3>First</h3>
                 <div>
-                  <span>S = {a, c, d}</span><br />
-                  <span>A = {a, ε}</span><br />
-                  <span>B = {c, d}</span><br />
-                  <span>C = {e, f}</span><br />
+                  <span>S = {a}</span><br />
+                  <span>A = {b, c}</span><br />
+                  <span>B = {c, a}</span><br />
+                  <span>C = {a, ε}</span><br />
                 </div>
               </div>
               <div class="info">
                 <h3>Follow</h3>
                 <div>
-                  <span>S = {$}</span><br />
-                  <span>A = {b, c, d, e, f}</span><br />
-                  <span>B = {e, f}</span><br />
-                  <span>C = {$, c, d}</span><br />
+                  <span>S = {$, a, b}</span><br />
+                  <span>A = {c, a}</span><br />
+                  <span>B = {$, a, b, c}</span><br />
+                  <span>C = {c}</span><br />
                 </div>
               </div>
             </div>
@@ -73,48 +73,33 @@
                   <th>a</th>
                   <th>b</th>
                   <th>c</th>
-                  <th>d</th>
-                  <th>e</th>
-                  <th>f</th>
                   <th>$</th>
                   <tr>
                     <td>S</td>
-                    <td>S -> ABC</td>
-                    <td></td>
-                    <td>S -> ABC</td>
-                    <td>S -> ABC</td>
+                    <td>S -> aAB</td>
                     <td></td>
                     <td></td>
                     <td></td>
                   </tr>
                   <tr>
                     <td>A</td>
-                    <td>A -> aAb</td>
-                    <td>A -> ε</td>
-                    <td>A -> ε</td>
-                    <td>A -> ε</td>
-                    <td>A -> ε</td>
-                    <td>A -> ε</td>
+                    <td></td>
+                    <td>A -> bB</td>
+                    <td>A -> cSa</td>
                     <td></td>
                   </tr>
                   <tr>
                     <td>B</td>
+                    <td>B -> aCc</td>
                     <td></td>
-                    <td></td>
-                    <td>B -> cBCcA</td>
-                    <td>B -> d</td>
-                    <td></td>
-                    <td></td>
+                    <td>B -> cSb</td>
                     <td></td>
                   </tr>
                   <tr>
                     <td>C</td>
+                    <td>A -> aA</td>
                     <td></td>
-                    <td></td>
-                    <td>C -> eCBe</td>
-                    <td></td>
-                    <td></td>
-                    <td>C -> f</td>
+                    <td>C -> ε</td>
                     <td></td>
                   </tr>
                 </table>

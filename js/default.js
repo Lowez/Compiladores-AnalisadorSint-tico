@@ -261,13 +261,13 @@ function toggleDropdown(){
 
 //Chamadas Iniciais
 initAutomaton();
-globalProduction.push(initProduction("S", ["a", "c", "d"], "ABC"));
+globalProduction.push(initProduction("S", ["a"], "aAB"));
 
-globalProduction.push(initProduction("A", ["a"], "aAb"));
-globalProduction.push(initProduction("A", ["b", "c", "d", "e", "f"], epsilon));
+globalProduction.push(initProduction("A", ["b"], "bB"));
+globalProduction.push(initProduction("A", ["c"], "cSa"));
 
-globalProduction.push(initProduction("B", ["c"], "cBCcA"));
-globalProduction.push(initProduction("B", ["d"], "d"));
+globalProduction.push(initProduction("B", ["c"], "cSb"));
+globalProduction.push(initProduction("B", ["a"], "aCc"));
 
-globalProduction.push(initProduction("C", ["e"], "eCBe"));
-globalProduction.push(initProduction("C", ["f"], "f"));
+globalProduction.push(initProduction("C", ["a"], "aA"));
+globalProduction.push(initProduction("C", ["c"], epsilon));
